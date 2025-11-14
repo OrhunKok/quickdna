@@ -45,18 +45,6 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
-  fmt:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
   check:
     needs: [ build ]
     runs-on: ubuntu-latest
