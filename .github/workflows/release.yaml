@@ -26,7 +26,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.13", "3.14"]
     steps:
      - uses: actions/checkout@v1
      - uses: actions-rs/toolchain@v1
@@ -62,3 +62,26 @@ jobs:
        with:
          name: windows-wheels
          path: target/wheels
+
+---
+  upload-release:
+    name: Upload Release Assets
+    needs: [linux-wheels, osx-wheels, windows-wheels]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all wheels
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts 
+      
+      - name: Get all wheel files
+        id: get_files
+        run: |
+          echo "files=$(find artifacts -name '*.whl' | paste -s -d ' ' -)" >> $GITHUB_OUTPUT
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.get_files.outputs.files }}
