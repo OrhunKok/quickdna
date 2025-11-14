@@ -1,10 +1,9 @@
-#![allow(clippy::borrow_deref_ref)] // TODO: broken clippy lint?
 // Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::types::{PyBytes, PyModule};
+use pyo3::types::PyBytes;
 
 use crate::{
     errors::TranslationError,
@@ -52,7 +51,6 @@ fn _reverse_complement_strict(py: Python, dna: &PyBytes) -> PyResult<Py<PyAny>> 
 
 #[pymodule]
 fn quickdna(py: Python, m: &PyModule) -> PyResult<()> {
-    // Wrap functions with the Python token
     m.add_function(wrap_pyfunction!(_check_table, m)?)?;
     m.add_function(wrap_pyfunction!(_translate, m)?)?;
     m.add_function(wrap_pyfunction!(_translate_strict, m)?)?;
