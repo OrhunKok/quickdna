@@ -1,8 +1,8 @@
 #![allow(clippy::borrow_deref_ref)] // TODO: broken clippy lint?
-                                    // Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
-                                    // SPDX-License-Identifier: MIT OR Apache-2.0
+// Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
+// SPDX-License-Identifier: MIT OR Apache-2.0
 
-use pyo3::{exceptions::PyValueError, prelude::*, types::PyBytes};
+use pyo3::{exceptions::PyValueError, prelude::*, types::{PyBytes, PyAny}};
 
 use crate::{
     errors::TranslationError,
@@ -29,10 +29,10 @@ fn _check_table(table: u8) -> PyResult<()> {
 ///
 /// * `translate(b"CCNTACACK CATNCNAAT")` returns `b"PYTHXN"`
 #[pyfunction]
-fn _translate(py: Python, table: u8, dna: &PyBytes) -> PyResult<PyObject> {
+fn _translate(py: Python<'_>, table: u8, dna: &PyBytes) -> PyResult<Py<PyAny>> {
     let table = TranslationTable::try_from(table)?;
     let bytes = table.translate_dna_bytes::<NucleotideAmbiguous>(dna.as_bytes())?;
-    Ok(PyBytes::new(py, &bytes).into())
+    Ok(PyBytes::new(py, &bytes).into_py(py))
 }
 
 /// Translate a bytestring of DNA nucleotides into a bytestring of amino acids.
@@ -42,10 +42,10 @@ fn _translate(py: Python, table: u8, dna: &PyBytes) -> PyResult<PyObject> {
 /// * `translate_strict(b"AAACCCTTTGGG")` returns `b"KPFG"`
 /// * `translate_strict(b"AAACCCTTTGGN")` is an error.
 #[pyfunction]
-fn _translate_strict(py: Python, table: u8, dna: &PyBytes) -> PyResult<PyObject> {
+fn _translate_strict(py: Python<'_>, table: u8, dna: &PyBytes) -> PyResult<Py<PyAny>> {
     let table = TranslationTable::try_from(table)?;
     let bytes = table.translate_dna_bytes::<Nucleotide>(dna.as_bytes())?;
-    Ok(PyBytes::new(py, &bytes).into())
+    Ok(PyBytes::new(py, &bytes).into_py(py))
 }
 
 /// Get the reverse complement of a bytestring of DNA nucleotides.
@@ -54,9 +54,9 @@ fn _translate_strict(py: Python, table: u8, dna: &PyBytes) -> PyResult<PyObject>
 ///
 /// * `reverse_complement(b"AAAAABCCC")` returns `b"GGGVTTTTT"`
 #[pyfunction]
-fn _reverse_complement(py: Python, dna: &PyBytes) -> PyResult<PyObject> {
+fn _reverse_complement(py: Python<'_>, dna: &PyBytes) -> PyResult<Py<PyAny>> {
     let bytes = reverse_complement_bytes::<NucleotideAmbiguous>(dna.as_bytes())?;
-    Ok(PyBytes::new(py, &bytes).into())
+    Ok(PyBytes::new(py, &bytes).into_py(py))
 }
 
 /// Get the reverse complement of a bytestring of DNA nucleotides.
@@ -66,13 +66,13 @@ fn _reverse_complement(py: Python, dna: &PyBytes) -> PyResult<PyObject> {
 /// * `reverse_complement_strict(b"AAAAAACCC")` returns `b"GGGTTTTTT"`
 /// * `reverse_complement_strict(b"AAAAAACCN")` is an error.
 #[pyfunction]
-fn _reverse_complement_strict(py: Python, dna: &PyBytes) -> PyResult<PyObject> {
+fn _reverse_complement_strict(py: Python<'_>, dna: &PyBytes) -> PyResult<Py<PyAny>> {
     let bytes = reverse_complement_bytes::<Nucleotide>(dna.as_bytes())?;
-    Ok(PyBytes::new(py, &bytes).into())
+    Ok(PyBytes::new(py, &bytes).into_py(py))
 }
 
 #[pymodule]
-fn quickdna(_py: Python, m: &PyModule) -> PyResult<()> {
+fn quickdna(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(_check_table, m)?)?;
     m.add_function(wrap_pyfunction!(_translate, m)?)?;
     m.add_function(wrap_pyfunction!(_translate_strict, m)?)?;
