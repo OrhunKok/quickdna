@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          set-safe-directory: true 
+          set-safe-directory: true
       - name: Build wheels
         run: |
           curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -21,8 +21,8 @@ jobs:
           bash .github/workflows/build-wheels.sh
       - uses: actions/upload-artifact@v4
         with:
-           name: linux-wheels
-           path: wheelhouse/
+          name: linux-wheels
+          path: wheelhouse/
 
   osx-wheels:
     runs-on: macos-latest
@@ -65,19 +65,18 @@ jobs:
          name: windows-wheels
          path: target/wheels
 
----
   upload-release:
     name: Upload Release Assets
     needs: [linux-wheels, osx-wheels, windows-wheels]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Download all wheels
         uses: actions/download-artifact@v4
         with:
           path: artifacts 
-      
+
       - name: Get all wheel files
         id: get_files
         run: |
