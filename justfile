@@ -19,14 +19,6 @@ test: develop
     HYPOTHESIS_PROFILE=dev pytest
     cargo test
 
-# Builds the wheel, installs it, and runs the benchmarks against biopython
-bench: develop
-    python benchmarks/bench.py
-
-# Builds the wheel, installs it, and runs cargo-flamegraph to generate flamegraph.svg
-profile: develop
-    flamegraph python benchmarks/bench.py --no-compare
-
 # Runs fmt, clippy, and black
 check: fmt clippy black
 
