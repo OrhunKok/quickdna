@@ -18,5 +18,8 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           
+      - name: Install Python dependencies
+        run: pip install six
+          
       - run: poetry install
       - run: poetry run black --check --verbose .
