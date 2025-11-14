@@ -1,13 +1,10 @@
 #![allow(clippy::borrow_deref_ref)] // TODO: broken clippy lint?
-                                    // Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
-                                    // SPDX-License-Identifier: MIT OR Apache-2.0
+// Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
+// SPDX-License-Identifier: MIT OR Apache-2.0
 
-//use pyo3::{exceptions::PyValueError, prelude::*, types::PyBytes};
-use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
-use pyo3::types::PyBytes;
-use pyo3::types::PyModule;
-
+use pyo3::prelude::*;
+use pyo3::types::{PyBytes, PyModule};
 
 use crate::{
     errors::TranslationError,
@@ -23,7 +20,7 @@ impl From<TranslationError> for PyErr {
 
 #[pyfunction]
 fn _check_table(table: u8) -> PyResult<()> {
-    let _ = TranslationTable::try_from(table)?;
+    TranslationTable::try_from(table)?;
     Ok(())
 }
 
@@ -83,6 +80,5 @@ fn quickdna(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(_translate_strict, m)?)?;
     m.add_function(wrap_pyfunction!(_reverse_complement, m)?)?;
     m.add_function(wrap_pyfunction!(_reverse_complement_strict, m)?)?;
-
     Ok(())
 }
