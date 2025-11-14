@@ -1,12 +1,8 @@
-// Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
-// SPDX-License-Identifier: MIT OR Apache-2.0
-
 use std::convert::TryFrom;
-
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
-use pyo3::wrap_pyfunction;
+use pyo3::wrap_pyfunction; 
 
 use crate::{
     errors::TranslationError,
@@ -27,33 +23,34 @@ fn _check_table(table: u8) -> PyResult<()> {
 }
 
 #[pyfunction]
-fn _translate(py: Python, table: u8, dna: &PyBytes) -> PyResult<Py<PyAny>> {
+fn _translate(py: Python, table: u8, dna: &[u8]) -> PyResult<Py<PyAny>> {
     let table = TranslationTable::try_from(table)?;
-    let bytes = table.translate_dna_bytes::<NucleotideAmbiguous>(dna.as_bytes())?;
+    // 'dna' is now already a byte slice, so we pass it directly.
+    let bytes = table.translate_dna_bytes::<NucleotideAmbiguous>(dna)?; 
     Ok(PyBytes::new(py, &bytes).into())
 }
 
 #[pyfunction]
-fn _translate_strict(py: Python, table: u8, dna: &PyBytes) -> PyResult<Py<PyAny>> {
+fn _translate_strict(py: Python, table: u8, dna: &[u8]) -> PyResult<Py<PyAny>> {
     let table = TranslationTable::try_from(table)?;
-    let bytes = table.translate_dna_bytes::<Nucleotide>(dna.as_bytes())?;
+    let bytes = table.translate_dna_bytes::<Nucleotide>(dna)?;
     Ok(PyBytes::new(py, &bytes).into())
 }
 
 #[pyfunction]
-fn _reverse_complement(py: Python, dna: &PyBytes) -> PyResult<Py<PyAny>> {
-    let bytes = reverse_complement_bytes::<NucleotideAmbiguous>(dna.as_bytes())?;
+fn _reverse_complement(py: Python, dna: &[u8]) -> PyResult<Py<PyAny>> {
+    let bytes = reverse_complement_bytes::<NucleotideAmbiguous>(dna)?;
     Ok(PyBytes::new(py, &bytes).into())
 }
 
 #[pyfunction]
-fn _reverse_complement_strict(py: Python, dna: &PyBytes) -> PyResult<Py<PyAny>> {
-    let bytes = reverse_complement_bytes::<Nucleotide>(dna.as_bytes())?;
+fn _reverse_complement_strict(py: Python, dna: &[u8]) -> PyResult<Py<PyAny>> {
+    let bytes = reverse_complement_bytes::<Nucleotide>(dna)?;
     Ok(PyBytes::new(py, &bytes).into())
 }
 
 #[pymodule]
-fn quickdna(py: Python, m: &PyModule) -> PyResult<()> {
+fn quickdna(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(_check_table, m)?)?;
     m.add_function(wrap_pyfunction!(_translate, m)?)?;
     m.add_function(wrap_pyfunction!(_translate_strict, m)?)?;
