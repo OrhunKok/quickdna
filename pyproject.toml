@@ -9,12 +9,12 @@ repository = "https://github.com/SecureDNA/quickdna"
 
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.14"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.1"
-pylint = "^2.6"
-flake8 = "^3.9"
+pytest = "*"
+pylint = "*"
+flake8 = "*"
 wheel = "*"
 pytest-runner = "*"
 pytest-benchmark = "*"
