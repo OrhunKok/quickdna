@@ -2,11 +2,11 @@
 // Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
-use std::convert::TryFrom;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
-use pyo3::wrap_pyfunction; 
+use pyo3::wrap_pyfunction;
+use std::convert::TryFrom;
 
 use crate::{
     errors::TranslationError,
@@ -29,7 +29,6 @@ fn _check_table(table: u8) -> PyResult<()> {
 #[pyfunction]
 fn _translate(py: Python, table: u8, dna: &[u8]) -> PyResult<Py<PyAny>> {
     let table = TranslationTable::try_from(table)?;
-    // 'dna' is now already a byte slice, so we pass it directly.
     let bytes = table.translate_dna_bytes::<NucleotideAmbiguous>(dna)?; 
     Ok(PyBytes::new(py, &bytes).into())
 }
