@@ -2,7 +2,10 @@
                                     // Copyright 2021-2024 SecureDNA Stiftung (SecureDNA Foundation) <licensing@securedna.org>
                                     // SPDX-License-Identifier: MIT OR Apache-2.0
 
-use pyo3::{exceptions::PyValueError, prelude::*, types::PyBytes};
+//use pyo3::{exceptions::PyValueError, prelude::*, types::PyBytes};
+use pyo3::prelude::*;
+use pyo3::types::PyModule;
+
 
 use crate::{
     errors::TranslationError,
