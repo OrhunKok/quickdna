@@ -7,16 +7,24 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.14'
 
-      - name: Install Poetry
+      - name: Remove system Poetry
+        run: sudo rm -f /usr/bin/poetry || true
+
+      - name: Install latest Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-          
+
+      - name: Verify Poetry version
+        run: which poetry && poetry --version
+
       - run: poetry install
       - run: poetry run black --check --verbose .
