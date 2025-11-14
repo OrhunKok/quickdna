@@ -77,12 +77,8 @@ jobs:
         with:
           path: artifacts 
 
-      - name: Get all wheel files
-        id: get_files
-        run: |
-          echo "files=$(find artifacts -name '*.whl' | paste -s -d ' ' -)" >> $GITHUB_OUTPUT
-
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.get_files.outputs.files }}
+          files: artifacts/**/*.whl
+
